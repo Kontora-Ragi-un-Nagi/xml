@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<people>
+  <person name="Tom">
+    <company>Microsoft</company>
+    <age>37</age>
+  </person>
+  <person name="Bob">
+    <company>Google</company>
+    <age>41</age>
+  </person>
+  <person name="Bill">
+    <company>Microsoft</company>
+    <age>45</age>
+  </person>
+  <person name="Bob">
+    <company>Google</company>
+    <age>41</age>
+  </person>
+  <person name="Annet">
+    <company>Microsoft</company>
+    <age>32</age>
+  </person>
+  <person name="Bob">
+    <company>Google</company>
+    <age>41</age>
+  </person>
+  <person name="Alexey">
+    <company>MCPlus</company>
+    <age>46</age>
+  </person>
+  <person name="Helen">
+    <company>MCPlus</company>
+    <age>47</age>
+  </person>
+</people>
