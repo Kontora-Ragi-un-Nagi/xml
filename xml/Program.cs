@@ -1,6 +1,7 @@
 ﻿using xml;
 using System.Xml;
 using System.Xml.Linq;
+using System;
 
 
 #region Описание
@@ -81,11 +82,11 @@ xRoot?.AppendChild(personElem);
 xDoc.Save("people.xml");
 #endregion
 
-#region Удаление узла
-XmlNode? firstNode = xRoot?.FirstChild;
-if (firstNode is not null) xRoot?.RemoveChild(firstNode);
-xDoc.Save("people.xml");
-#endregion
+//#region Удаление узла
+//XmlNode? firstNode = xRoot?.FirstChild;
+//if (firstNode is not null) xRoot?.RemoveChild(firstNode);
+//xDoc.Save("people.xml");
+//#endregion
 
 #region XPath - язык запросов у XML
 //.
@@ -133,37 +134,37 @@ xDoc.Save("people.xml");
 //выбор в документе всех узлов с именем "company", которые находятся в элементах "person"
 #endregion
 
-#region Пример запросов
+//#region Пример запросов
 
-XmlNodeList? personNodes = xRoot?.SelectNodes("person");
-if (personNodes is not null)
-{
-    foreach (XmlNode node in personNodes)
-        Console.WriteLine(node.SelectSingleNode("@name")?.Value);
-}
+//XmlNodeList? personNodes = xRoot?.SelectNodes("person");
+//if (personNodes is not null)
+//{
+//    foreach (XmlNode node in personNodes)
+//        Console.WriteLine(node.SelectSingleNode("@name")?.Value);
+//}
 
-XmlNodeList? nodes = xRoot?.SelectNodes("*");
-if (nodes is not null)
-{
-    foreach (XmlNode node in nodes)
-        Console.WriteLine(node.OuterXml);
-}
+//XmlNodeList? nodes = xRoot?.SelectNodes("*");
+//if (nodes is not null)
+//{
+//    foreach (XmlNode node in nodes)
+//        Console.WriteLine(node.OuterXml);
+//}
 
-XmlNode childnode = xRoot.SelectSingleNode("person[@name='Tom']");
-if (childnode != null)
-    Console.WriteLine(childnode.OuterXml);
+//XmlNode childnode = xRoot.SelectSingleNode("person[@name='Tom']");
+//if (childnode != null)
+//    Console.WriteLine(childnode.OuterXml);
 
-XmlNode? tomNode = xRoot?.SelectSingleNode("person[@name='Tom']");
-Console.WriteLine(tomNode?.OuterXml);
+//XmlNode? tomNode = xRoot?.SelectSingleNode("person[@name='Tom']");
+//Console.WriteLine(tomNode?.OuterXml);
 
-XmlNodeList? companyNodes = xRoot?.SelectNodes("//person/company");
-if (companyNodes is not null)
-{
-    foreach (XmlNode node in companyNodes)
-        Console.WriteLine(node.InnerText);
-}
+//XmlNodeList? companyNodes = xRoot?.SelectNodes("//person/company");
+//if (companyNodes is not null)
+//{
+//    foreach (XmlNode node in companyNodes)
+//        Console.WriteLine(node.InnerText);
+//}
 
-#endregion
+//#endregion
 
 #region LinqToXML
 
@@ -194,10 +195,43 @@ new XElement("person",
 new XAttribute("name", "Tom"),
 new XElement("company", "Microsoft"),
 new XElement("age", 37)),
+
 new XElement("person",
 new XAttribute("name", "Bob"),
 new XElement("company", "Google"),
-new XElement("age", 41))));
+new XElement("age", 41)),
+
+new XElement("person",
+new XAttribute("name", "Bill"),
+new XElement("company", "Microsoft"),
+new XElement("age", 45)),
+
+new XElement("person",
+new XAttribute("name", "Bob"),
+new XElement("company", "Google"),
+new XElement("age", 41)),
+
+new XElement("person",
+new XAttribute("name", "Annet"),
+new XElement("company", "Microsoft"),
+new XElement("age", 32)),
+
+new XElement("person",
+new XAttribute("name", "Bob"),
+new XElement("company", "Google"),
+new XElement("age", 41)),
+
+new XElement("person",
+new XAttribute("name", "Alexey"),
+new XElement("company", "MCPlus"),
+new XElement("age", 46)),
+
+new XElement("person",
+new XAttribute("name", "Helen"),
+new XElement("company", "MCPlus"),
+new XElement("age", 47))
+
+));
 
 xdoc.Save("people2.xml");
 
@@ -221,9 +255,36 @@ if (people is not null)
     }
 }
 
+Console.WriteLine("     Google darbinieki:");
+
+var google = xdoc.Element("people")?   // получаем корневой узел people
+    .Elements("person")             // получаем все элементы person
+                                    // получаем все person, у которого company = Microsoft
+    .Where(p => p.Element("company")?.Value == "Google")
+    .Select(p => new        // для каждого объекта создаем анонимный объект
+    {
+        name = p.Attribute("name")?.Value,
+        age = p.Element("age")?.Value,
+        company = p.Element("company")?.Value
+    });
+
+if (google is not null)
+{
+    foreach (var person in google)
+    {
+        Console.WriteLine($"Name: {person.name}  Age: {person.age}");
+    }
+}
+#endregion
+
+Console.WriteLine("    Microsoft darbinieki:");
+
+#region
+
 var microsoft = xdoc.Element("people")?   // получаем корневой узел people
     .Elements("person")             // получаем все элементы person
                                     // получаем все person, у которого company = Microsoft
+
     .Where(p => p.Element("company")?.Value == "Microsoft")
     .Select(p => new        // для каждого объекта создаем анонимный объект
     {
@@ -239,4 +300,45 @@ if (microsoft is not null)
         Console.WriteLine($"Name: {person.name}  Age: {person.age}");
     }
 }
+
+
+#endregion
+Console.WriteLine();
+
+double averageAge = people.Average(p => p.Age);
+
+Console.WriteLine();
+
+Console.WriteLine($"Average Age: {averageAge}");
+
+Console.WriteLine("    MCPlus darbinieki:");
+#region
+
+var mcplus = xdoc.Element("people")?   // получаем корневой узел people
+    .Elements("person")             // получаем все элементы person
+                                    // получаем все person, у которого company = Microsoft
+
+    .Where(p => p.Element("company")?.Value == "MCPlus")
+    .Select(p => new        // для каждого объекта создаем анонимный объект
+    {
+        name = p.Attribute("name")?.Value,
+        age = p.Element("age")?.Value,
+        company = p.Element("company")?.Value
+    });
+
+if (microsoft is not null)
+{
+    foreach (var person in microsoft)
+    {
+        Console.WriteLine($"Name: {person.name}  Age: {person.age}");
+    }
+}
+
+#endregion
+
+#region
+
+
+
+
 #endregion
