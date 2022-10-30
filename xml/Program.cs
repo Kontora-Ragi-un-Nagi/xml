@@ -2,6 +2,7 @@
 using System.Xml;
 using System.Xml.Linq;
 using System;
+using System.Linq;
 
 
 #region Описание
@@ -256,6 +257,7 @@ if (people is not null)
 }
 
 Console.WriteLine("     Google darbinieki:");
+Console.WriteLine();
 
 var google = xdoc.Element("people")?   // получаем корневой узел people
     .Elements("person")             // получаем все элементы person
@@ -277,7 +279,9 @@ if (google is not null)
 }
 #endregion
 
+Console.WriteLine();
 Console.WriteLine("    Microsoft darbinieki:");
+Console.WriteLine();
 
 #region
 
@@ -289,7 +293,7 @@ var microsoft = xdoc.Element("people")?   // получаем корневой �
     .Select(p => new        // для каждого объекта создаем анонимный объект
     {
         name = p.Attribute("name")?.Value,
-        age = p.Element("age")?.Value,
+        Age = int.Parse ( p.Element("age")?.Value),
         company = p.Element("company")?.Value
     });
 
@@ -297,19 +301,28 @@ if (microsoft is not null)
 {
     foreach (var person in microsoft)
     {
-        Console.WriteLine($"Name: {person.name}  Age: {person.age}");
+        Console.WriteLine($"Name: {person.name}  Age: {person.Age}");
     }
 }
-
-
 #endregion
 Console.WriteLine();
 
-double averageAge = people.Average(p => p.Age);
+int MSvozrast = 0;
+int MSkolicestvo=0;
+decimal MSsrednijvozrast=0m;
+if (microsoft is not null)
+{
+    MSkolicestvo=microsoft.Count();
+    MSvozrast = microsoft.Select(x => x.Age).Sum();
+    MSsrednijvozrast=MSvozrast/MSkolicestvo;
+}
+
+
+//double averageAge = people.Average(p => p.Age);
+
+Console.WriteLine($"Microsoft darbinieki: videjas vecums: {MSsrednijvozrast}");
 
 Console.WriteLine();
-
-Console.WriteLine($"Average Age: {averageAge}");
 
 Console.WriteLine("    MCPlus darbinieki:");
 #region
@@ -330,7 +343,7 @@ if (microsoft is not null)
 {
     foreach (var person in microsoft)
     {
-        Console.WriteLine($"Name: {person.name}  Age: {person.age}");
+        Console.WriteLine($"Name: {person.name}  Age: {person.Age}");
     }
 }
 
