@@ -135,7 +135,7 @@ xDoc.Save("people.xml");
 //выбор в документе всех узлов с именем "company", которые находятся в элементах "person"
 #endregion
 
-//#region Пример запросов
+#region Пример запросов
 
 //XmlNodeList? personNodes = xRoot?.SelectNodes("person");
 //if (personNodes is not null)
@@ -165,7 +165,7 @@ xDoc.Save("people.xml");
 //        Console.WriteLine(node.InnerText);
 //}
 
-//#endregion
+#endregion
 
 #region LinqToXML
 
@@ -192,33 +192,34 @@ xDoc.Save("people.xml");
 //RemoveAll(): удаляет все дочерние элементы и атрибуты у данного элемента
 
 XDocument xdoc = new XDocument(new XElement("people",
+
 new XElement("person",
-new XAttribute("name", "Tom"),
+  new XAttribute("name", "Tom"),
 new XElement("company", "Microsoft"),
 new XElement("age", 37)),
 
 new XElement("person",
-new XAttribute("name", "Bob"),
+  new XAttribute("name", "Bob"),
 new XElement("company", "Google"),
 new XElement("age", 41)),
 
 new XElement("person",
-new XAttribute("name", "Bill"),
+  new XAttribute("name", "Bill"),
 new XElement("company", "Microsoft"),
 new XElement("age", 45)),
 
 new XElement("person",
-new XAttribute("name", "Bob"),
+  new XAttribute("name", "Bob"),
 new XElement("company", "Google"),
 new XElement("age", 41)),
 
 new XElement("person",
-new XAttribute("name", "Annet"),
+  new XAttribute("name", "Annet"),
 new XElement("company", "Microsoft"),
 new XElement("age", 32)),
 
 new XElement("person",
-new XAttribute("name", "Bob"),
+  new XAttribute("name", "Bob"),
 new XElement("company", "Google"),
 new XElement("age", 41)),
 
@@ -265,16 +266,16 @@ var google = xdoc.Element("people")?   // получаем корневой уз
     .Where(p => p.Element("company")?.Value == "Google")
     .Select(p => new        // для каждого объекта создаем анонимный объект
     {
-        name = p.Attribute("name")?.Value,
-        age = p.Element("age")?.Value,
-        company = p.Element("company")?.Value
+        Name = p.Attribute("name")?.Value,
+        Age = p.Element("age")?.Value,
+        Company = p.Element("company")?.Value
     });
 
 if (google is not null)
 {
     foreach (var person in google)
     {
-        Console.WriteLine($"Name: {person.name}  Age: {person.age}");
+        Console.WriteLine($"Name: {person.Name}  Age: {person.Age}");
     }
 }
 #endregion
@@ -292,24 +293,27 @@ var microsoft = xdoc.Element("people")?   // получаем корневой �
     .Where(p => p.Element("company")?.Value == "Microsoft")
     .Select(p => new        // для каждого объекта создаем анонимный объект
     {
-        name = p.Attribute("name")?.Value,
+        Name = p.Attribute("name")?.Value,
         Age = int.Parse ( p.Element("age")?.Value),
-        company = p.Element("company")?.Value
+        Company = p.Element("company")?.Value
     });
 
 if (microsoft is not null)
 {
     foreach (var person in microsoft)
     {
-        Console.WriteLine($"Name: {person.name}  Age: {person.Age}");
+        Console.WriteLine($"Name: {person.Name}  Age: {person.Age}");
     }
 }
 #endregion
 Console.WriteLine();
 
+#region
+
 int MSvozrast = 0;
 int MSkolicestvo=0;
 decimal MSsrednijvozrast=0m;
+
 if (microsoft is not null)
 {
     MSkolicestvo=microsoft.Count();
@@ -323,6 +327,7 @@ if (microsoft is not null)
 Console.WriteLine($"Microsoft darbinieki: videjas vecums: {MSsrednijvozrast}");
 
 Console.WriteLine();
+#endregion
 
 Console.WriteLine("    MCPlus darbinieki:");
 #region
@@ -334,24 +339,48 @@ var mcplus = xdoc.Element("people")?   // получаем корневой уз
     .Where(p => p.Element("company")?.Value == "MCPlus")
     .Select(p => new        // для каждого объекта создаем анонимный объект
     {
-        name = p.Attribute("name")?.Value,
-        age = p.Element("age")?.Value,
-        company = p.Element("company")?.Value
+        Name = p.Attribute("name")?.Value,
+        Age = int.Parse(p.Element("age")?.Value),
+        Company = p.Element("company")?.Value
     });
 
-if (microsoft is not null)
+if (mcplus is not null)
 {
-    foreach (var person in microsoft)
+    foreach (var person in mcplus)
     {
-        Console.WriteLine($"Name: {person.name}  Age: {person.Age}");
+        Console.WriteLine($"Name: {person.Name}  Age: {person.Age}");
     }
 }
 
 #endregion
 
+Console.WriteLine();
 #region
 
+int MCPkolicestvo = 0;
+int MCPvozrast = 0;
+decimal MCPsrednijvozrast = 0m;
+if (mcplus is not null)
+{
+    MCPkolicestvo = mcplus.Count();
+    MCPvozrast = mcplus.Select(x => x.Age).Sum();
+    MCPsrednijvozrast = MCPvozrast / MCPkolicestvo;
+}
 
 
+Console.WriteLine($"MCPlus darbinieki: videjas vecums: {MCPsrednijvozrast}");
+
+Console.WriteLine();
+
+decimal MS_MCP_srednijvozrast=0;
+
+
+MS_MCP_srednijvozrast = (MSsrednijvozrast + MCPsrednijvozrast) / 2;
+
+Console.WriteLine($"MCPlus + Microsoft darbinieki: videjas vecums: {MS_MCP_srednijvozrast}");
 
 #endregion
+
+xdoc.Save("input.xml");
+
+Console.WriteLine(xdoc);
